@@ -1,34 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Link, Route, Routes } from "react-router-dom"
+import Home from "./pages/Home"
+import About from "./pages/About"
+
+import "./server.js"
+import Vans from "./pages/Vans.js"
+import VanDetail from "./pages/VanDetail.js"
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchVansAsync } from "./features/vans/vansAction.js";
+import { AppDispatch, RootState } from "./store";
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const vansState = useSelector((state: RootState) => state.vans);
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(fetchVansAsync());
+  }, [dispatch]);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <BrowserRouter>
+      <header>
+        <Link className="site-logo" to="/">#VanLife</Link>
+        <nav>
+          <Link to="/about">About</Link>
+          <Link to="/vans">Vans</Link>
+        </nav>
+      </header>
+      <Routes>
+        <Route path="/" element={<Home />}></Route>
+        <Route path="/about" element={<About />}></Route>
+        <Route path="/vans" element={<Vans vansState={vansState}/>}></Route>
+        <Route path="/vans/:id" element={<VanDetail/>}></Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
