@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-import { fetchVansAsync } from "./vansAction";
+import { fetchHostVansAsync } from "./hostAction";
 import { VansState } from "../../interface/props";
 
 
@@ -13,22 +12,22 @@ const initialState: VansState = {
   error: "",
 };
 
-export const vanSlice = createSlice({
+export const hostSlice = createSlice({
   name: "vans",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      //fetch all vans
-      .addCase(fetchVansAsync.pending, (state) => {
+      //fetch all vans owned by the host
+      .addCase(fetchHostVansAsync.pending, (state) => {
         state.status = "LOADING";
         state.error = "";
       })
-      .addCase(fetchVansAsync.fulfilled, (state, action) => {
+      .addCase(fetchHostVansAsync.fulfilled, (state, action) => {
         state.status = "IDLE";
         state.vans = action.payload.vans;
       })
-      .addCase(fetchVansAsync.rejected, (state, action) => {
+      .addCase(fetchHostVansAsync.rejected, (state, action) => {
         state.status = "ERROR";
         state.error = action.error.message || "";
       });
@@ -37,4 +36,4 @@ export const vanSlice = createSlice({
 
 // export const {  } = counterSlice.actions
 
-export default vanSlice.reducer;
+export default hostSlice.reducer;

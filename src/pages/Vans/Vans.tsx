@@ -1,5 +1,9 @@
 import { Link } from "react-router-dom";
-import { VansProps } from "../interface/props";
+import { VansProps } from "../../interface/props";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store";
+import { fetchVansAsync } from "../../features/vans/vansAction";
+import { useEffect } from "react";
 
 const Vans = ({ vansState } : VansProps) => {
   const { error, status, vans } =vansState
@@ -8,10 +12,18 @@ const Vans = ({ vansState } : VansProps) => {
   console.log("====================================");
 
 
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    if(vans.length == 0)
+      dispatch(fetchVansAsync())
+  }, [vans.length,dispatch])
+  
+
 
   const vanElements = vans.map((van) => (
     <div key={van.id} className='van-tile'>
-      <Link to={`/vans/${van.id}`}>
+      <Link to={`/vans/${van.id-1}`}>
         <img src={van.imageUrl} />
         <div className='van-info'>
           <h3>{van.name}</h3>

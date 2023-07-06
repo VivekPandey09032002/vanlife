@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom"
-import { RootState } from "../store";
+import { RootState } from "../../store";
 
 
 export default function VanDetail() {
@@ -29,6 +29,4 @@ export default function VanDetail() {
         </div>
     )
 
-
-    return <h1>{id} Van detail page goes here</h1>
 }

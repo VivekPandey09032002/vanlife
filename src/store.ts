@@ -1,10 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import vansReducer from './features/vans/vanSlice'
-
+import hostReducer from './features/host/hostSlice'
 
 export const store = configureStore({
   reducer: {
     vans: vansReducer,
+    host : hostReducer
   },
 })
 
