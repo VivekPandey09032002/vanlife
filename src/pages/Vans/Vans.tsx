@@ -1,29 +1,23 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { VansProps } from "../../interface/props";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store";
-import { fetchVansAsync } from "../../features/vans/vansAction";
-import { useEffect } from "react";
 
-const Vans = ({ vansState } : VansProps) => {
-  const { error, status, vans } =vansState
+const Vans = ({ vansState }: VansProps) => {
+  const { error, status, vans } = vansState;
   console.log("====================================");
   console.log("vans state", { error, status, vans });
   console.log("====================================");
 
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const dispatch = useDispatch<AppDispatch>();
+  const typeFilter = searchParams.get("type");
 
-  useEffect(() => {
-    if(vans.length == 0)
-      dispatch(fetchVansAsync())
-  }, [vans.length,dispatch])
-  
+  const displayedVans = typeFilter
+    ? vans.filter((van) => van.type === typeFilter)
+    : vans;
 
-
-  const vanElements = vans.map((van) => (
+  const vanElements = displayedVans.map((van) => (
     <div key={van.id} className='van-tile'>
-      <Link to={`/vans/${van.id-1}`}>
+      <Link to={`${van.id}`} state={{ searchParams : typeFilter}}>
         <img src={van.imageUrl} />
         <div className='van-info'>
           <h3>{van.name}</h3>
@@ -37,11 +31,55 @@ const Vans = ({ vansState } : VansProps) => {
     </div>
   ));
 
+  const vanFilters = [...new Set(vans.map((van) => van.type))].map((type) => (
+    <button
+      onClick={() => handleFilterChange("type", type)}
+      className={`van-type ${type} ${typeFilter === type ? "selected" : ""}`}
+    >
+      {type}
+    </button>
+  ));
+
+  function handleFilterChange(key: string, value: string) {
+    setSearchParams((prevParams) => {
+      if (value === "") {
+        prevParams.delete(key);
+      } else {
+        prevParams.set(key, value);
+      }
+      return prevParams;
+    });
+  }
+
+  if (status === "LOADING") {
+    return <h1>Loading.....</h1>;
+  }
+
+  if (status === "ERROR") {
+    return (
+      <div>
+        <h1>something went wrong!!!</h1>
+        <p>{error}</p>
+      </div>
+    );
+  }
+
   return (
-    <div className='van-list-container'>
+    <main className='van-list-container'>
       <h1>Explore our van options</h1>
+      <div className='van-list-filter-buttons'>
+        {vanFilters}
+        {typeFilter ? (
+          <button
+            onClick={() => handleFilterChange("type", "")}
+            className='van-type clear-filters'
+          >
+            Clear filter
+          </button>
+        ) : null}
+      </div>
       <div className='van-list'>{vanElements}</div>
-    </div>
+    </main>
   );
 };
 

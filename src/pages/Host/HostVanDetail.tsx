@@ -12,11 +12,14 @@ const HostVanDetail = () => {
       ? 1
       : +params.id
     : 1;
-  const van = useSelector((state: RootState) =>
-    state.host.vans.find((element) => element.id == id)
+  const {vans,error,status} = useSelector((state: RootState) =>
+    state.host
   );
 
-  console.log("my van",van)
+  
+
+  const van = vans.find((element) => element.id == id)
+
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -26,11 +29,19 @@ const HostVanDetail = () => {
     }
   }, [van, dispatch]);
 
-  if (van === undefined || Object.keys(van).length == 0) {
-    return <h1>No vans found</h1>;
+  if(status === "LOADING"){
+    return <h1>Loading....</h1>
   }
 
-  console.log(van);
+  if(status === "ERROR"){
+    return <div><h1>something went wrong!!!</h1><p>{error}</p></div>
+  }
+
+  if (van === undefined || Object.keys(van).length == 0) {
+    return <h1>No vans found</h1>
+  }
+
+
 
   return (
     <section>

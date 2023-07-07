@@ -19,6 +19,7 @@ import HostVanDetail from "./pages/Host/HostVanDetail.js";
 import HostVanInfo from "./pages/Host/HostVanInfo.js";
 import HostVanPricing from "./pages/Host/HostVanPricing.js";
 import HostVanPhoto from "./pages/Host/HostVanPhoto.js";
+import NotFoundPage from "./pages/NotFoundPage.js";
 
 function App() {
   const vansState = useSelector((state: RootState) => state.vans);
@@ -31,7 +32,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        
         <Route path='/' element={<Layout />}>
+          <Route path='*' element={<NotFoundPage />}/>
           {/* home page */}
           <Route index element={<Home />} />
           {/* about page */}
